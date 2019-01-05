@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficeManageSharp", "OfficeManageSharp\OfficeManageSharp.csproj", "{B231972B-9B9D-46D3-B280-0B155F3AF38A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B231972B-9B9D-46D3-B280-0B155F3AF38A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B231972B-9B9D-46D3-B280-0B155F3AF38A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B231972B-9B9D-46D3-B280-0B155F3AF38A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B231972B-9B9D-46D3-B280-0B155F3AF38A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1C043094-4D69-4189-B441-6F7998FF85B5}
+	EndGlobalSection
+EndGlobal
