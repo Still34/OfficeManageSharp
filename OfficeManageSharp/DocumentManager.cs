@@ -1,9 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml.CustomProperties;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.VariantTypes;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Serilog;
 
 namespace OfficeManageSharp
@@ -11,17 +11,17 @@ namespace OfficeManageSharp
     // Thanks to the current version of OpenXML, none of the documents share an interface.
     internal class DocumentManager
     {
-        public void MarkXlsxAsFinal(string input, bool doSave)
+        public void MarkXlsxAsFinal(string input)
         {
             if (!File.Exists(input)) throw new FileNotFoundException();
-            using (var ppt = SpreadsheetDocument.Open(input, true))
+            using (var xls = SpreadsheetDocument.Open(input, true))
             {
                 var filename = Path.GetFileName(input);
                 Log.Information("Processing {inputFile}...", filename);
-                var customProps = ppt.CustomFilePropertiesPart;
+                var customProps = xls.CustomFilePropertiesPart;
                 if (customProps == null)
                 {
-                    customProps = ppt.AddCustomFilePropertiesPart();
+                    customProps = xls.AddCustomFilePropertiesPart();
                     customProps.Properties = new Properties();
                 }
 
@@ -46,15 +46,12 @@ namespace OfficeManageSharp
                 foreach (var openXmlElement in props)
                     if (openXmlElement is CustomDocumentProperty customDocumentProperty)
                         customDocumentProperty.PropertyId = pid++;
-
-                var coreProp = ppt.CoreFilePropertiesPart ?? ppt.AddCoreFilePropertiesPart();
-                coreProp.OpenXmlPackage.PackageProperties.ContentStatus = "Final";
-                if (doSave) ppt.Save();
+                xls.PackageProperties.ContentStatus = "Final";
                 Log.Information("Marked {inputName} as final.", filename);
             }
         }
 
-        public void MarkPptxAsFinal(string input, bool doSave)
+        public void MarkPptxAsFinal(string input)
         {
             if (!File.Exists(input)) throw new FileNotFoundException();
             using (var ppt = PresentationDocument.Open(input, true))
@@ -89,16 +86,13 @@ namespace OfficeManageSharp
                 foreach (var openXmlElement in props)
                     if (openXmlElement is CustomDocumentProperty customDocumentProperty)
                         customDocumentProperty.PropertyId = pid++;
-
-                var coreProp = ppt.CoreFilePropertiesPart ?? ppt.AddCoreFilePropertiesPart();
-                coreProp.OpenXmlPackage.PackageProperties.ContentStatus = "Final";
-                if (doSave) ppt.Save();
+                ppt.PackageProperties.ContentStatus = "Final";
 
                 Log.Information("Marked {inputName} as final.", filename);
             }
         }
 
-        public void MarkDocxAsFinal(string input, bool doSave)
+        public void MarkDocxAsFinal(string input)
         {
             if (!File.Exists(input)) throw new FileNotFoundException();
             using (var doc = WordprocessingDocument.Open(input, true))
@@ -133,28 +127,27 @@ namespace OfficeManageSharp
                 foreach (var openXmlElement in props)
                     if (openXmlElement is CustomDocumentProperty customDocumentProperty)
                         customDocumentProperty.PropertyId = pid++;
+                doc.PackageProperties.ContentStatus = "Final";
 
-                var coreProp = doc.CoreFilePropertiesPart ?? doc.AddCoreFilePropertiesPart();
-                coreProp.OpenXmlPackage.PackageProperties.ContentStatus = "Final";
-
-                if (doSave) props.Save();
                 Log.Information("Marked {inputName} as final.", filename);
             }
         }
 
-        public void RemoveDocxFonts(string input, bool doSave)
+        public void RemoveDocxFonts(string input)
         {
             using (var doc = WordprocessingDocument.Open(input, true))
             {
-
-                doc.MainDocumentPart.FontTablePart.Fonts = new Fonts();
-
-                if (doSave) doc.Save();
+                var filename = Path.GetFileName(input);
+                Log.Information("Removing embedded fonts from {inputFile}...", filename);
+                var fontParts = doc.MainDocumentPart.Parts
+                    .Where(x => x.OpenXmlPart.ContentType.Contains("font", StringComparison.OrdinalIgnoreCase))
+                    .Select(x => x.OpenXmlPart)
+                    .ToArray();
+                if (fontParts.Any())
+                    doc.MainDocumentPart.DeleteParts(fontParts);
+                else
+                    Log.Warning("No embedded fonts are found for {file}, skipping...", filename);
             }
-
-            var filename = Path.GetFileNameWithoutExtension(input);
-            var newFilename = Path.GetFullPath(input).Replace(filename, $"{filename}_");
-            ZipHelper.DoRebuildWithoutFonts(input, newFilename);
         }
     }
 }

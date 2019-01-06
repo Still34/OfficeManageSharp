@@ -1,22 +1,20 @@
 ﻿using CommandLine;
+using CommandLine.Text;
 
 namespace OfficeManageSharp
 {
     internal class Options
     {
-        [Option("markFinal", HelpText = "Marks the file as final")]
+        [Option('m', "markAsFinal", HelpText = "Marks the file as final")]
         public bool ShouldMarkAsFinal { get; set; }
 
-        [Option("removeFonts", HelpText = "Removes embedded fonts")]
+        [Option('e', "removeFonts", HelpText = "Removes embedded fonts")]
         public bool ShouldRemoveEmbedFonts { get; set; }
 
-        [Option('i', "input")] 
+        [Option('i', "input", Required = true)] 
         public string InputDirectory { get; set; }
 
         [Option('r', "recurse", Default = false)]
         public bool IsRecursive { get; set; }
-
-        [Option('s', "simulate", Default = false)]
-        public bool IsSimulation { get; set; }
     }
 }
