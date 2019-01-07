@@ -1,0 +1,26 @@
+image: Visual Studio 2017
+before_build:
+- cmd: dotnet restore
+build:
+  verbosity: minimal
+branches:
+    only:
+        - master
+after_build:
+- ps: dotnet publish -c Release -f net46 -r win-x64 -o "../$env:APPVEYOR_PROJECT_NAME-$env:APPVEYOR_REPO_COMMIT-win-net46-x64"
+- ps: dotnet publish -c Release -f netcoreapp2.2 -r win-x64 -o "../$env:APPVEYOR_PROJECT_NAME-$env:APPVEYOR_REPO_COMMIT-win-x64"
+- ps: dotnet publish -c Release -f netcoreapp2.2 -r linux-x64 -o "../$env:APPVEYOR_PROJECT_NAME-$env:APPVEYOR_REPO_COMMIT-linux-x64"
+- ps: dotnet publish -c Release -f netcoreapp2.2 -r osx-x64 -o "../$env:APPVEYOR_PROJECT_NAME-$env:APPVEYOR_REPO_COMMIT-mac-x64"
+- ps: dotnet publish -c Release -o "../$env:APPVEYOR_PROJECT_NAME-$env:APPVEYOR_REPO_COMMIT-all-x64"
+- ps: Get-ChildItem $env:APPVEYOR_PROJECT_NAME-* | % { 7z a -tzip $_.Name $_.FullName }
+- ps: Get-ChildItem *.zip | % { Push-AppveyorArtifact $_.FullName }
+deploy:
+  release: OfficeManageSharp-v$(appveyor_build_version)
+  provider: GitHub
+  auth_token:
+    secure: ZGxVlPYQLtufVwTFtoEcvlYLA0n/HknXh5VFD6zJN2TASohu6TgV4eQgrR+X3PSh
+  artifact: /.*\.zip/
+  draft: false
+  prerelease: false
+  on:
+    branch: master
