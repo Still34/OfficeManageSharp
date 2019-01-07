@@ -1,7 +1,10 @@
 # OfficeManageSharp
+
 A tool used to quickly manage and edit office documents without use of Microsoft Office products.
 
-# Features
+## Features
+
+* Cross-platform, supports Windows, Linux, and macOS
 * Remove embedded fonts
 * Mark document as final
 
