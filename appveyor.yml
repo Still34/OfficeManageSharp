@@ -7,7 +7,7 @@ branches:
     only:
         - master
 after_build:
-- ps: $shortSha = $APPVEYOR_REPO_COMMIT.SubString(0, 6)
+- ps: $shortSha = $env:APPVEYOR_REPO_COMMIT.SubString(0, 6)
 - ps: dotnet publish -c Release -f net46 -r win-x64 -o "../$env:APPVEYOR_PROJECT_NAME-$shortSha-win-net46-x64"
 - ps: dotnet publish -c Release -f netcoreapp2.2 -r win-x64 -o "../$env:APPVEYOR_PROJECT_NAME-$shortSha-win-x64"
 - ps: dotnet publish -c Release -f netcoreapp2.2 -r linux-x64 -o "../$env:APPVEYOR_PROJECT_NAME-$shortSha-linux-x64"
