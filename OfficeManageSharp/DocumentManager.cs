@@ -140,7 +140,7 @@ namespace OfficeManageSharp
                 var filename = Path.GetFileName(input);
                 Log.Information("Removing embedded fonts from {inputFile}...", filename);
                 var fontParts = doc.MainDocumentPart.Parts
-                    .Where(x => x.OpenXmlPart.ContentType.Contains("font", StringComparison.OrdinalIgnoreCase))
+                    .Where(x => x.OpenXmlPart.ContentType.IndexOf("font", StringComparison.OrdinalIgnoreCase) != -1)
                     .Select(x => x.OpenXmlPart)
                     .ToArray();
                 if (fontParts.Any())
