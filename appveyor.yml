@@ -11,7 +11,7 @@ after_build:
 - ps: dotnet publish -c Release -f netcoreapp2.2 -r win-x64 -o "../$env:APPVEYOR_PROJECT_NAME-$env:APPVEYOR_REPO_COMMIT-win-x64"
 - ps: dotnet publish -c Release -f netcoreapp2.2 -r linux-x64 -o "../$env:APPVEYOR_PROJECT_NAME-$env:APPVEYOR_REPO_COMMIT-linux-x64"
 - ps: dotnet publish -c Release -f netcoreapp2.2 -r osx-x64 -o "../$env:APPVEYOR_PROJECT_NAME-$env:APPVEYOR_REPO_COMMIT-mac-x64"
-- ps: dotnet publish -c Release -o "../$env:APPVEYOR_PROJECT_NAME-$env:APPVEYOR_REPO_COMMIT-all-x64"
+- ps: dotnet publish -c Release -f netcoreapp2.2 -o "../$env:APPVEYOR_PROJECT_NAME-$env:APPVEYOR_REPO_COMMIT-all-x64"
 - ps: Get-ChildItem $env:APPVEYOR_PROJECT_NAME-* | % { 7z a -tzip $_.Name $_.FullName }
 - ps: Get-ChildItem *.zip | % { Push-AppveyorArtifact $_.FullName }
 deploy:
