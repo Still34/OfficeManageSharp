@@ -68,7 +68,6 @@ namespace OfficeManageSharp
         private static string[] GetDocuments(string filepath, bool isRecursive, DocumentType docType)
         {
             if (filepath == null) throw new ArgumentNullException(nameof(filepath));
-            if (!Directory.Exists(filepath)) throw new DirectoryNotFoundException();
             string searchPattern;
             switch (docType)
             {
